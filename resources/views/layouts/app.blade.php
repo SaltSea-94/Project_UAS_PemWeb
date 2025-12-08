@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light"> <head>
+<html lang="en" data-bs-theme="light">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - MariBaca</title>
@@ -7,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-       :root, [data-bs-theme="light"] {
+        :root, [data-bs-theme="light"] {
             --bg-color: #f8f9fa; 
             --text-color: #212529; 
             --navbar-bg: #ffffff;
@@ -183,6 +184,12 @@
             height: 40px; 
             object-fit: cover; 
         }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1d20; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
         .theme-switch-wrapper { 
             display: flex; 
             align-items: center; 
@@ -278,15 +285,24 @@
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand fs-4" href="/">MariBaca</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+                @if(!Request::is('login') && !Request::is('register'))
                 <div class="mx-auto search-container" style="width: 50%;">
                     <form class="d-flex" role="search" autocomplete="off">
-                        <input class="form-control" type="search" id="searchInput" placeholder="Cari Cerita" aria-label="Search">
+                         <input class="form-control" type="search" id="searchInput" placeholder="Cari Cerita" aria-label="Search">
                     </form>
                     <div id="searchResults"></div>
                 </div>
+                @endif
 
                 <div class="navbar-nav ms-auto align-items-center">
+
                     <div class="theme-switch-container ms-3 me-2">
                         <label class="theme-switch" for="themeSwitch">
                             <input type="checkbox" id="themeSwitch">
@@ -295,20 +311,49 @@
                                 <i class="bi bi-sun-fill theme-icon sun-icon"></i>
                             </span>
                         </label>
-                        <span id="theme-label" class="nav-link p-0">Dark Mode</span>
                     </div>
+                
+                    @guest
+                        @if(!Request::is('login') && !Request::is('register'))
+                            <div class="d-flex gap-2 ms-2">
+                                <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm px-3">Masuk</a>
+                                <a href="{{ route('register') }}" class="btn btn-primary btn-sm px-3 text-white">Daftar</a>
+                            </div>
+                        @endif
+                    @endguest
 
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <img src="https://pbs.twimg.com/media/FdChU06XwAQrVCJ.jpg" class="rounded-circle navbar-profile-pic" alt="Profil">
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/profil">Profil Saya</a></li>
-                            <li><a class="dropdown-item" href="/">Beranda</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/logout">Keluar</a></li>
-                        </ul>
-                    </div>
+                    @auth
+                        <div class="nav-item dropdown ms-3">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                @if(Auth::user()->photo)
+                                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" class="navbar-profile-pic border border-secondary">
+                                @else
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}" class="navbar-profile-pic border border-secondary">
+                                @endif
+                            </a>
+                            
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li><h6 class="dropdown-header">Halo, {{ Str::limit(Auth::user()->name, 15) }}</h6></li>
+                                
+                                <li>
+                                    <a class="dropdown-item fw-bold text-warning" href="{{ route('writer.index') }}">
+                                        <i class="bi bi-pen-fill me-2"></i> Halaman Penulis
+                                    </a>
+                                </li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                
+                                <li><a class="dropdown-item" href="{{ route('profil.index') }}"><i class="bi bi-person me-2"></i> Profil Saya</a></li>
+                                
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Keluar</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -319,58 +364,79 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const stories = [
-            { title: 'The Unkindled Of The Broken Soil', url: '/story/the-unkindled' },
-            { title: 'Broken World', url: '#' },
-            { title: 'Asteria', url: '#' }
-        ];
+        // --- 1. LOGIKA LIVE SEARCH (DATABASE) ---
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
 
-        searchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase();
-            searchResults.innerHTML = '';
-            if (query.length > 0) {
-                const filteredStories = stories.filter(story => story.title.toLowerCase().includes(query));
-                filteredStories.forEach(story => {
-                    const link = document.createElement('a');
-                    link.href = story.url;
-                    link.textContent = story.title;
-                    searchResults.appendChild(link);
-                });
-            }
-        });
-        document.addEventListener('click', function(event) {
-            if (!searchInput.contains(event.target)) { searchResults.innerHTML = ''; }
-        });
+        if(searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value;
 
+                if (query.length < 2) {
+                    searchResults.innerHTML = '';
+                    return;
+                }
+
+                fetch(`/search?q=${query}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        searchResults.innerHTML = '';
+
+                        if (data.length > 0) {
+                            data.forEach(story => {
+                                const link = document.createElement('a');
+                                link.href = `/story/${story.slug}`;
+                                link.className = 'd-flex align-items-center gap-2 py-2 px-3 text-decoration-none border-bottom';
+                                
+                                link.innerHTML = `
+                                    <div style="width: 30px; height: 40px; background-color: #ccc; overflow: hidden; border-radius: 4px;">
+                                        <img src="/${story.cover_image || 'images/placeholder.jpg'}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                    <span class="text-truncate">${story.title}</span>
+                                `;
+                                
+                                searchResults.appendChild(link);
+                            });
+                        } else {
+                            const noResult = document.createElement('div');
+                            noResult.className = 'p-3 text-muted text-center small';
+                            noResult.textContent = 'Cerita tidak ditemukan.';
+                            searchResults.appendChild(noResult);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+                    searchResults.innerHTML = '';
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) searchResults.innerHTML = '';
+            });
+        }
+
+        // --- 2. LOGIKA DARK MODE ---
         const themeSwitch = document.getElementById('themeSwitch');
         const htmlEl = document.documentElement;
-        const themeLabel = document.getElementById('theme-label');
-
+        
         function setTheme(theme) {
             htmlEl.setAttribute('data-bs-theme', theme);
             localStorage.setItem('theme', theme);
-
-            if (theme === 'dark') {
-                themeLabel.textContent = 'Dark Mode';
-            } else {
-                themeLabel.textContent = 'Light Mode';
-            }
         }
 
-        themeSwitch.addEventListener('change', function() {
-            if (this.checked) {
-                setTheme('dark');
-            } else {
-                setTheme('light');
-            }
-        });
+        if(themeSwitch) {
+            themeSwitch.addEventListener('change', function() {
+                setTheme(this.checked ? 'dark' : 'light');
+            });
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme') || 'light';
-                setTheme(savedTheme);
-            if (savedTheme === 'dark') {
+            setTheme(savedTheme);
+            if (savedTheme === 'dark' && themeSwitch) {
                 themeSwitch.checked = true;
             }
         });

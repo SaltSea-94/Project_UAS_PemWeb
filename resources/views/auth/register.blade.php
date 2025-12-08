@@ -1,31 +1,36 @@
-@extends('layouts.auth')
+@extends('layouts.app')
 
-@section('title', 'Sign Up')
+@section('title', 'Daftar')
 
 @section('content')
-<div class="col-md-5 col-lg-4 w-100" style="max-width: 400px;">
-    <div class="card shadow-sm">
-        <div class="card-body p-4">
-            <h3 class="text-center mb-4">Sign Up</h3>
-            <div class="mb-3">
-                <label for="name" class="form-label">Nama User</label>
-                <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Alamat Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="d-grid mt-4">
-                <a href="/" class="btn btn-dark">Register</a>
-            </div>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card p-4 shadow-lg border-0" style="max-width: 400px; width: 100%; background-color: #212529;">
+        <div class="card-body">
+            <h3 class="text-center mb-4 text-white fw-bold">Daftar Akun</h3>
+            
+            <form action="{{ route('register') }}" method="POST">
+                @csrf
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Nama Lengkap</label>
+                    <input type="text" name="name" class="form-control bg-dark text-white border-secondary" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Alamat Email</label>
+                    <input type="email" name="email" class="form-control bg-dark text-white border-secondary" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-secondary">Password</label>
+                    <input type="password" name="password" class="form-control bg-dark text-white border-secondary" required>
+                </div>
+                
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary fw-bold">DAFTAR</button>
+                </div>
+            </form>
 
-        </div>
-        <div class="card-footer text-center py-3">
-            <small class="text-muted">Sudah punya akun? <a href="/login">Sign In</a></small>
+            <div class="text-center mt-4">
+                <small class="text-muted">Sudah punya akun? <a href="{{ route('login') }}" class="text-primary text-decoration-none">Masuk</a></small>
+            </div>
         </div>
     </div>
 </div>

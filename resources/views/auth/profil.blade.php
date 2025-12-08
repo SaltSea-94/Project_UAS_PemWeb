@@ -3,66 +3,61 @@
 @section('title', 'Profil Saya')
 
 @section('content')
-<style>
-    .profile-banner {
-        height: 250px;
-        background-image: url('https://media.tenor.com/sfHhORuORUAAAAAe/fin.png');
-        background-size: cover;
-        background-position: center;
-    }
-    .profile-picture {
-        width: 128px;
-        height: 128px;
-        border-radius: 50%;
-        border: 4px solid white;
-        margin-top: -64px;
-        background-color: #333;
-    }
-</style>
-
-<div class="container">
-    <div class="profile-banner rounded"></div>
-    <div class="d-flex align-items-end px-4">
-        <img src="https://pbs.twimg.com/media/FdChU06XwAQrVCJ.jpg" class="profile-picture" alt="Profile Picture">
-        <div class="ms-3 mb-2">
-            <h3 class="fw-bold mb-0">SaltSea</h3>
-            <p class="text-muted">@SaltSea94</p>
-        </div>
-    </div>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="perihal" role="tabpanel">
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <p class="fw-bold">A man who enjoying his tragedy life</p>
-                    <p class="text-muted small">Bergabung: Maret 21, 2020</p>
-                </div>
-                <div class="col-md-8">
-                    <h5>Cerita disimpan oleh SaltSea</h5>
-                    <div class="card mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-3">
-                                <a href="/story/the-unkindled">
-                                    <img src="https://img.wattpad.com/cover/400713440-256-k379853.jpg" class="img-fluid rounded-start" alt="Story Cover">
-                                </a>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        <a href="/story/the-unkindled" class="text-decoration-none">
-                                            The Unkindled of The Broken Soil
-                                        </a>
-                                    </h5>
-                                    <p class="card-text">Tak semua yang berjalan memiliki tujuan. Tak semua yang diam itu hampa. Dan tak semua kisah tentang dunia... harus berakhir dengan penyelamatan atau kehancuran.</p>
-                                    <p class="card-text"><small class="text-muted">1 Cerita Tersimpan</small></p>
-                                </div>
-                            </div>
-                        </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center p-5">
+                    
+                    <div class="mb-4 position-relative d-inline-block">
+                        @if($user->photo)
+                            <img src="{{ asset('storage/' . $user->photo) }}" class="rounded-circle" width="150" height="150" style="object-fit: cover; border: 5px solid var(--bg-color);">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random&size=150" class="rounded-circle">
+                        @endif
                     </div>
+
+                    <h3 class="fw-bold mb-1">{{ $user->name }}</h3>
+                    <p class="text-muted mb-4">{{ $user->email }}</p>
+
+                    <hr>
+
+                    <h5 class="text-start mb-3">Edit Data Diri</h5>
+                    <form action="{{ route('profil.update') }}" method="POST" enctype="multipart/form-data" class="text-start">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="mb-3">
+                            <label class="form-label">Ganti Foto Profil</label>
+                            <input type="file" name="photo" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Nama Lengkap</label>
+                            <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Alamat Email</label>
+                            <input type="email" name="email" value="{{ $user->email }}" class="form-control" required>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <button type="button" class="btn btn-outline-danger btn-sm" onclick="if(confirm('Yakin ingin menghapus akun?')){ document.getElementById('delete-account-form').submit(); }">
+                                Hapus Akun
+                            </button>
+
+                            <button type="submit" class="btn btn-primary px-4">Simpan Perubahan</button>
+                        </div>
+                    </form>
+
+                    <form id="delete-account-form" action="{{ route('profil.destroy') }}" method="POST" class="d-none">
+                        @csrf @method('DELETE')
+                    </form>
+
                 </div>
             </div>
         </div>
-        <div class="tab-pane fade" id="percakapan" role="tabpanel">
-            </div>
     </div>
 </div>
 @endsection

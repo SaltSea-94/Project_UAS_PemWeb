@@ -1,132 +1,132 @@
 @extends('layouts.app')
 
-@section('title', 'The Unkindled Of The Broken Soil')
+@section('title', $story->title)
+
+<head>
+    <style>
+        
+        /* 1. Setting Dasar Teks & Background */
+        .adaptive-text { color: #000000; }
+        .adaptive-muted { color: #555555; }
+        .adaptive-card { background-color: #ffffff; border: 1px solid #ddd; }
+        
+        /* 2. Setting Khusus DARK MODE */
+        [data-bs-theme="dark"] .adaptive-text, body.dark-mode .adaptive-text {
+            color: #ffffff !important;
+        }
+        
+        [data-bs-theme="dark"] .adaptive-muted, body.dark-mode .adaptive-muted {
+            color: #bbbbbb !important;
+        }
+
+        [data-bs-theme="dark"] .adaptive-card, body.dark-mode .adaptive-card {
+            background-color: #212529 !important;
+            border-color: #495057 !important;
+            color: #ffffff !important;
+        }
+
+        .list-group-item { background-color: inherit; color: inherit; }
+    </style>
+</head>
 
 @section('content')
-<style>
-    .story-cover-main {
-        width: 250px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-    .author-profile-pic {
-        width: 80px;
-        height: 80px;
-    }
-    .chapter-list .list-group-item {
-        border-left: none;
-        border-right: none;
-    }
-    .chapter-list .dot {
-        height: 10px;
-        width: 10px;
-        background-color: #198754;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 10px;
-    }
-</style>
-
-<div class="container">
+<div class="container mt-5 mb-5">
     <div class="row">
-        <div class="col-lg-8">
-            <div class="text-center">
-                <img src="https://img.wattpad.com/cover/400713440-256-k379853.jpg" class="story-cover-main mb-4" alt="Story Cover">
-                <h1 class="fw-bold">The Unkindled Of The Broken Soil</h1>
-                <div class="d-flex justify-content-center my-3 text-muted">
-                    <span><i class="bi bi-eye-fill"></i> 1,3K Pembaca</span>
-                    <span class="mx-3">|</span>
-                    <span><i class="bi bi-star-fill"></i> 876 Suara</span>
-                    <span class="mx-3">|</span>
-                    <span><i class="bi bi-list-ul"></i> 6 Bagian</span>
-                </div>
-            </div>
-            <div class="mt-4">
-                <p>Tak semua yang berjalan memiliki tujuan.</p>
-                <p>Tak semua yang diam itu hampa.</p>
-                <p>Dan tak semua kisah tentang dunia... harus berakhir dengan penyelamatan atau kehancuran.</p>
-                <p>Kehancuran itu bukanlah akibat perang terakhir, melainkan pengkhianatan yang tak pernah diratapi.</p>
-                <p>Langit telah lama berhenti berbicara. Dan dunia mulai membusuk dari dalam.</p>
-                <p>Di antara reruntuhan, berjalanlah seorang pria yang tak pernah bersuara, yaitu Sora, Sang Tak Bernyawa. Ia tak membawa takdir, juga tak membawa janji. Ia hanya berjalan. Bisu sejak lahir, namun dalam kebisuannya tersimpan luka sejarah yang tak seorang pun dapat ungkapkan. Sora tak pernah berniat menyelamatkan dunia, juga tak ingin menghancurkannya. Ia hanya ingin tahu... apakah dunia yang telah membuangnya, masih layak untuk dipahami?</p>
-                <p>Dalam perjalanannya, Sora bertemu tiga jiwa lain yang sama rapuhnya, seperti;</p>
-                <p>Kaelith, seorang pemanah pemberani yang menyembunyikan cinta dalam kesunyian yang sunyi.</p>
-                <p>Vael, seorang ksatria sisa dari kerajaan yang runtuh, masih terikat oleh sumpah yang tak tertebus.</p>
-                <p>Namien, seorang penyihir flamboyan yang menyembunyikan kejenuhannya akan dunia dalam ejekan dan lelucon tajamnya, telah memilih untuk menjadi pedagang pengembara.</p>
-                <p>Bersama-sama, mereka menapaki tanah yang retak, menghadapi kutukan kuno, pasukan tak bernyawa, dan pertanyaan-pertanyaan yang tak akan pernah mereka temukan jawabannya. Mereka tak tahu apakah mereka sedang bergerak menuju keselamatan... atau hanya memperpanjang kejatuhan mereka.</p>
-                <p>Namun seiring berjalannya waktu, mereka belajar bahwa yang menghubungkan mereka bukanlah harapan, melainkan keberanian untuk berjalan dalam keheningan. Bahwa mungkin dunia tidak membutuhkan seorang penyelamat, melainkan seseorang yang cukup hancur untuk mendengarkan... dan cukup jujur untuk tidak menjanjikan apa pun.</p>
-                <p class="text-muted small mt-3">&copy; Seluruh Hak Cipta Dilindungi Undang-Undang</p>
-
-                <div class="mt-4 genre-tags">
-                    @php
-                        $tags = ['Action', 'Adventure', 'Anti-Hero', 'Post-Apocalyptic', 'Grimdark', 'Fantasy', 'Mystery', 'Psychological', 'Romance', 'Supranatural', 'Survival', 'Tragedy', 'Thriller'];
-                    @endphp
-        
-                    @foreach ($tags as $tag)
-                        <a class="text-decoration-none me-3">{{ $tag }}</a>
-                    @endforeach
-                </div>
-            </div>
-
-            <hr class="my-5">
-
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h4 class="mb-0">Daftar Isi</h4>
-                </div>
-                @php
-                    $chapters = [
-                        ['title' => 'Prolog: Di Masa Sebelum Keheningan', 'date' => 'Kamis, Agt 28, 2020', 'completed' => true, 'slug' => 'prolog'],
-                        ['title' => 'Bab Satu: Bara Api di Bawah Langit yang Terlupakan', 'date' => 'Kamis, Agt 28, 2020', 'completed' => true, 'slug' => 'bab-satu'],
-                        ['title' => 'Bab Dua: Pedang Tanpa Nama', 'date' => 'Kamis, Agt 28, 2020', 'completed' => true, 'slug' => 'bab-dua'],
-                        ['title' => 'Bab Tiga: Abu di Bawah Tulang-Tulang Boreal', 'date' => 'Kamis, Okt 2, 2020', 'completed' => true, 'slug' => 'bab-tiga'],
-                        ['title' => 'Bab Empat: Mahkota Mayat Hidup', 'date' => 'Kamis, Okt 2, 2020', 'completed' => true, 'slug' => 'bab-empat'],
-                        ['title' => 'Bab Lima: Di Balik Selubung Api', 'date' => 'Kamis, Okt 2, 2020', 'completed' => true, 'slug' => 'bab-lima'],
-                    ];
-                    $lastReadSlug = request()->cookie('lastRead_the-unkindled');
-                @endphp
-                <ul class="list-group list-group-flush chapter-list">
-                    @foreach ($chapters as $chapter)
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <a href="/story/the-unkindled/{{ $chapter['slug'] }}" class="text-decoration-none text-dark">{{ $chapter['title'] }}</a>
-                            
-                            @if ($chapter['slug'] === $lastReadSlug)
-                                <span class="text-success small ms-2">(100%)</span>
-                            @endif
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-lg overflow-hidden adaptive-card">
+                @if($story->cover_image)
+                    <img src="{{ asset('storage/' . $story->cover_image) }}" class="card-img-top" alt="{{ $story->title }}">
+                @else
+                    <div class="d-flex align-items-center justify-content-center" style="height: 450px; background-color: #333; color: white;">
+                        <div class="text-center p-3">
+                            <h3 class="fw-bold">{{ $story->title }}</h3>
+                            <p class="small">oleh {{ $story->author->name }}</p>
                         </div>
-                        <span class="text-muted small">{{ $chapter['date'] }}</span>
-                    </li>
-                    @endforeach
-                </ul>
+                    </div>
+                @endif
             </div>
+
+            @if($story->chapters->first())
+                <div class="d-grid mt-3">
+                    <a href="{{ route('chapter.read', [$story->slug, $story->chapters->first()->slug]) }}" class="btn btn-warning btn-lg fw-bold shadow">
+                        <i class="bi bi-book-half me-2"></i> Mulai Membaca
+                    </a>
+                </div>
+            @endif
         </div>
 
-        <div class="col-lg-4 mt-5 mt-lg-0">
-            <div class="card">
-                <div class="card-body d-flex flex-column align-items-center text-center">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRELQj5hriIcoFRsLNxwe4n18NzeYwaDCLrRA&s" class="rounded-circle author-profile-pic" alt="Author">
-                    <a href="#" class="text-decoration-none fw-bold mt-2">MauMandi</a>
-                    <small class="text-muted">Penulis</small>
+        <div class="col-md-8">
+            <h1 class="fw-bold display-5 mb-2 adaptive-text">{{ $story->title }}</h1>
+            
+            <div class="d-flex align-items-center mb-3">
+                <div class="me-3 adaptive-text">
+                    <i class="bi bi-person-circle me-1"></i>
+                    <span class="fw-bold">{{ $story->author->name }}</span>
+                </div>
+                <div class="adaptive-muted small">
+                    <i class="bi bi-clock"></i> Update: {{ $story->updated_at->format('d M Y') }}
                 </div>
             </div>
+
+            <div class="mb-4">
+                <div class="d-flex flex-wrap gap-2">
+                    
+                    @foreach($story->genres as $genre)
+                        <span class="badge bg-primary bg-gradient px-3 py-2 rounded-pill shadow-sm">
+                            {{ $genre->name }}
+                        </span>
+                    @endforeach
+
+                    @foreach($story->tags as $tag)
+                        <span class="badge bg-secondary bg-gradient px-3 py-2 rounded-pill shadow-sm opacity-75">
+                            {{ $tag->name }}
+                        </span>
+                    @endforeach
+                </div>
+
+                <div class="mt-4 pt-3 border-top border-secondary d-flex align-items-center adaptive-muted small">
+                    <i class="bi bi-c-circle me-2 fs-5"></i> <span class="fw-bold">Seluruh Hak Cipta Dilindungi Undang-Undang</span>
+                </div>
+            </div>
+
+            <div class="mb-5">
+                <h5 class="fw-bold border-bottom pb-2 adaptive-text">Sinopsis</h5>
+                <p class="adaptive-text" style="line-height: 1.8; white-space: pre-line;">{{ $story->description }}</p>
+            </div>
+
+            @if($story->contentWarnings->count() > 0)
+                <div class="alert alert-danger mb-4">
+                    <strong><i class="bi bi-exclamation-triangle-fill"></i> Peringatan Konten:</strong>
+                    <ul class="mb-0 ps-3 mt-1 small">
+                        @foreach($story->contentWarnings as $warning)
+                            <li>{{ $warning->name }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <div class="card shadow-sm adaptive-card">
+                <div class="card-header fw-bold py-3 adaptive-card">
+                    <i class="bi bi-list-ol me-2"></i> Daftar Bab
+                </div>
+                <div class="list-group list-group-flush">
+                    @forelse($story->chapters as $chapter)
+                        <a href="{{ route('chapter.read', [$story->slug, $chapter->slug]) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 adaptive-card">
+                            <div>
+                                <span class="small me-2 opacity-75">Bab {{ $chapter->sort_order }}</span>
+                                <span class="fw-semibold">{{ $chapter->title }}</span>
+                            </div>
+                            <i class="bi bi-chevron-right small opacity-50"></i>
+                        </a>
+                    @empty
+                        <div class="text-center py-4 adaptive-muted">
+                            <i class="bi bi-hourglass-split"></i> Belum ada bab yang dirilis.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
 @endsection
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const bookId = 'the-unkindled';
-        const lastReadSlug = localStorage.getItem('lastRead_' + bookId);
-
-        if (lastReadSlug) {
-            const lastReadLink = document.querySelector(`.chapter-list a[data-slug='${lastReadSlug}']`);
-
-            if (lastReadLink) {
-                const greenDot = document.createElement('span');
-                greenDot.className = 'dot';
-                lastReadLink.parentNode.insertBefore(greenDot, lastReadLink);
-            }
-        }
-    });
-</script>
-@endpush

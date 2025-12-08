@@ -2,97 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Story;
+use App\Models\Chapter;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    // 1. HALAMAN HOME (Daftar Cerita)
     public function home()
     {
-        return view('home');
+        $stories = Story::with(['genres', 'author'])->latest()->get();
+        return view('home', compact('stories'));
     }
 
-    /**
-     * Menampilkan halaman profil pengguna.
-     */
-    public function profil()
+    // 2. HALAMAN DETAIL CERITA (Daftar Isi untuk Pembaca)
+    public function showStory($slug)
     {
-        return view('auth.profil');
+        $story = Story::with(['chapters', 'genres', 'tags', 'author', 'contentWarnings'])
+                      ->where('slug', $slug)
+                      ->firstOrFail();
+
+        return view('story.detail', compact('story'));
     }
 
-    /**
-     * Menampilkan halaman login.
-     */
-    public function showLoginForm()
+    // 3. HALAMAN BACA BAB (Tampilan Baca Bersih)
+    public function readChapter($story_slug, $chapter_slug)
     {
-        return view('auth.login');
+        // Ambil data cerita
+        $story = Story::where('slug', $story_slug)->firstOrFail();
+        
+        // Ambil bab yang sedang dibaca
+        $chapter = Chapter::where('story_id', $story->id)
+                          ->where('slug', $chapter_slug)
+                          ->firstOrFail();
+
+        // Logika Tombol Next / Previous
+        $previousChapter = Chapter::where('story_id', $story->id)
+                                  ->where('sort_order', '<', $chapter->sort_order)
+                                  ->orderBy('sort_order', 'desc')
+                                  ->first();
+
+        $nextChapter = Chapter::where('story_id', $story->id)
+                              ->where('sort_order', '>', $chapter->sort_order)
+                              ->orderBy('sort_order', 'asc')
+                              ->first();
+
+        // Sesuaikan dengan nama file kamu: 'story.baca'
+        return view('story.baca', compact('story', 'chapter', 'previousChapter', 'nextChapter'));
     }
 
-    /**
-     * Menampilkan halaman register.
-     */
-    public function showRegisterForm()
+    // 4. Pencarian Cerita LiveSearch
+    public function search(Request $request)
     {
-        return view('auth.register');
-    }
+        $query = $request->input('q');
 
-    public function logout()
-    {
-        return redirect('/login');
-    }
+        if (!$query) {
+            return response()->json([]);
+        }
 
-    /**
-     * Menampilkan halaman detail novel.
-     */
-    public function showDetail()
-    {
-        return view('story.detail');
-    }
+        $stories = Story::where('title', 'LIKE', "%{$query}%")
+                        ->select('title', 'slug', 'cover_image')
+                        ->limit(5)
+                        ->get();
 
-    /**
-     * Menampilkan halaman baca Prolog.
-     */
-    public function showChapter()
-    {
-        return view('story.baca');
-    }
-
-    /**
-     * Menampilkan halaman baca Bab 1.
-     */
-    public function showChapterOne()
-    {
-        return view('story.baca-bab-1');
-    }
-
-    /**
-     * Menampilkan halaman baca Bab 2.
-     */
-    public function showChapterTwo()
-    {
-        return view('story.baca-bab-2');
-    }
-
-    /**
-     * Menampilkan halaman baca Bab 3.
-     */
-    public function showChapterThree()
-    {
-        return view('story.baca-bab-3');
-    }
-
-    /**
-     * Menampilkan halaman baca Bab 4.
-     */
-    public function showChapterFour()
-    {
-        return view('story.baca-bab-4');
-    }
-
-    /**
-     * Menampilkan halaman baca Bab 5.
-     */
-    public function showChapterFive()
-    {
-        return view('story.baca-bab-5');
+        return response()->json($stories);
     }
 }
