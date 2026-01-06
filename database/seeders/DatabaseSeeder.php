@@ -10,9 +10,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Jalankan Seeder Genre (Supaya pilihan Action, Romance, dll muncul)
-        $this->call(GenreSeeder::class);
-
-        $this->call(TagAndWarningSeeder::class);
+        $this->call([
+            AdminSeeder::class,
+            GenreSeeder::class,
+            TagAndWarningSeeder::class,
+        ]);
 
         // 2. Jalankan Seeder Cerita (Supaya cerita "The Unkindled" masuk)
         //$this->call(StorySeeder::class);

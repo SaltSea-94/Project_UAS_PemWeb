@@ -11,6 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\IsAdmin::class,
+            'not.banned' => \App\Http\Middleware\EnsureUserIsNotBanned::class,
+        ]);
+
         $middleware->encryptCookies(except: [
             'lastRead_the-unkindled',
         ]);

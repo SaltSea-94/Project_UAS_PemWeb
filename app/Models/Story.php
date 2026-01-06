@@ -32,4 +32,14 @@ class Story extends Model
     public function chapters() {
         return $this->hasMany(Chapter::class)->orderBy('sort_order', 'asc');
     }
+
+    // Relasi Reviews
+    public function reviews(){
+        return $this->hasMany(Review::class)->latest();
+    }
+
+    // Relasi Comments
+    public function comments(){
+        return $this->hasMany(Comment::class)->latest();
+    }
 }

@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
         <div>
             <h2 class="fw-bold mb-0">MariNulis <span class="text-warning fs-4">Studio</span></h2>
-            <p class="text-muted small mb-0">Dapur tempat kamu meracik cerita.</p>
+            <p class="text-muted small mb-0">Tempat kamu menghasilkan karyamu.</p>
         </div>
         <a href="{{ route('writer.create') }}" class="btn btn-warning fw-bold shadow-sm">
             <i class="bi bi-plus-lg"></i> Buat Cerita Baru
@@ -71,7 +71,6 @@
                                         </a>
                                         
                                         {{-- Hapus --}}
-                                    
                                         <form action="{{ route('writer.destroy', $story->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus cerita ini selamanya? Semua bab akan hilang.');" class="ms-auto">
                                             @csrf
                                             @method('DELETE')

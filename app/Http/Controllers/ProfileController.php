@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use App\Models\Story;
+use App\Models\AdminMessage;
 
 class ProfileController extends Controller
 {
@@ -67,5 +70,14 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login')->with('success', 'Akun Anda telah dihapus.');
+    }
+
+    public function inbox()
+    {
+        $messages = AdminMessage::where('user_id', Auth::id())->latest()->get();
+        
+        AdminMessage::where('user_id', Auth::id())->update(['is_read' => true]);
+
+        return view('user.inbox', compact('messages'));
     }
 }

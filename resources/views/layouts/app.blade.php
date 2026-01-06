@@ -281,83 +281,131 @@
     </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-expand-lg sticky-top">
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
         <div class="container">
             <a class="navbar-brand fs-4" href="/">MariBaca</a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+            <button class="navbar-toggler border-0 p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-
-                @if(!Request::is('login') && !Request::is('register'))
-                <div class="mx-auto search-container" style="width: 50%;">
-                    <form class="d-flex" role="search" autocomplete="off">
-                         <input class="form-control" type="search" id="searchInput" placeholder="Cari Cerita" aria-label="Search">
-                    </form>
-                    <div id="searchResults"></div>
-                </div>
-                @endif
-
-                <div class="navbar-nav ms-auto align-items-center">
-
-                    <div class="theme-switch-container ms-3 me-2">
-                        <label class="theme-switch" for="themeSwitch">
-                            <input type="checkbox" id="themeSwitch">
-                            <span class="slider">
-                                <i class="bi bi-moon-fill theme-icon moon-icon"></i>
-                                <i class="bi bi-sun-fill theme-icon sun-icon"></i>
-                            </span>
-                        </label>
-                    </div>
+            <div class="collapse navbar-collapse" id="navbarContent">
                 
-                    @guest
-                        @if(!Request::is('login') && !Request::is('register'))
-                            <div class="d-flex gap-2 ms-2">
-                                <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm px-3">Masuk</a>
-                                <a href="{{ route('register') }}" class="btn btn-primary btn-sm px-3 text-white">Daftar</a>
-                            </div>
-                        @endif
-                    @endguest
+                <div class="d-flex align-items-center w-100 mt-3 mt-lg-0">
 
-                    @auth
-                        <div class="nav-item dropdown ms-3">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                                @if(Auth::user()->photo)
-                                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" class="navbar-profile-pic border border-secondary">
-                                @else
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}" class="navbar-profile-pic border border-secondary">
-                                @endif
-                            </a>
-                            
-                            <ul class="dropdown-menu dropdown-menu-end shadow">
-                                <li><h6 class="dropdown-header">Halo, {{ Str::limit(Auth::user()->name, 15) }}</h6></li>
-                                
-                                <li>
-                                    <a class="dropdown-item fw-bold text-warning" href="{{ route('writer.index') }}">
-                                        <i class="bi bi-pen-fill me-2"></i> Halaman Penulis
-                                    </a>
-                                </li>
-                                
-                                <li><hr class="dropdown-divider"></li>
-                                
-                                <li><a class="dropdown-item" href="{{ route('profil.index') }}"><i class="bi bi-person me-2"></i> Profil Saya</a></li>
-                                
-                                <li>
-                                    <form action="{{ route('logout') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Keluar</button>
-                                    </form>
-                                </li>
-                            </ul>
+                    {{-- A. SEARCH BAR --}}
+                    @if(!Request::is('login') && !Request::is('register'))
+                    <div class="position-relative w-100 ms-lg-3 me-auto" style="max-width: 400px;">
+                        <form class="d-flex" role="search" autocomplete="off">
+                             <input class="form-control" type="search" id="searchInput" placeholder="Cari Cerita..." aria-label="Search">
+                        </form>
+                        <div id="searchResults"></div>
+                    </div>
+                    @else
+                    <div class="me-auto"></div>
+                    @endif
+
+                    {{-- B. GROUP KANAN (Tema & Profil) --}}
+                    <div class="d-flex align-items-center gap-2 ms-2 ms-lg-0 mt-3 mt-lg-0">
+                        
+                        <div class="theme-switch-container mb-0">
+                            <label class="theme-switch" for="themeSwitch" style="margin-bottom: 0;">
+                                <input type="checkbox" id="themeSwitch">
+                                <span class="slider round">
+                                    <i class="bi bi-moon-fill theme-icon moon-icon"></i>
+                                    <i class="bi bi-sun-fill theme-icon sun-icon"></i>
+                                </span>
+                            </label>
                         </div>
-                    @endauth
+                    
+                        <div class="nav-item dropdown">
+                            @guest
+                                @if(!Request::is('login') && !Request::is('register'))
+                                    <div class="d-flex gap-1">
+                                        <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm d-lg-none px-2"><i class="bi bi-box-arrow-in-right"></i></a>
+                                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm d-lg-none px-2 text-white"><i class="bi bi-person-plus"></i></a>
+                                        <a href="{{ route('login') }}" class="btn btn-outline-primary btn-sm px-3 d-none d-lg-block">Masuk</a>
+                                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm px-3 text-white d-none d-lg-block">Daftar</a>
+                                    </div>
+                                @endif
+                            @endguest
+
+                            @auth
+                                <a class="nav-link dropdown-toggle d-flex align-items-center p-0" href="#" role="button" data-bs-toggle="dropdown">
+                                    @if(Auth::user()->photo)
+                                        <img src="{{ asset('storage/' . Auth::user()->photo) }}" class="navbar-profile-pic rounded-circle border">
+                                    @else
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}" class="navbar-profile-pic rounded-circle border">
+                                    @endif
+                                    
+                                    {{-- Badge Notifikasi --}}
+                                    @php
+                                        $unreadCount = 0;
+                                        if(class_exists('\App\Models\AdminMessage')) {
+                                            $unreadCount = \App\Models\AdminMessage::where('user_id', Auth::id())->where('is_read', false)->count();
+                                        }
+                                    @endphp
+                                    @if($unreadCount > 0)
+                                        <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                    @endif
+                                </a>
+                                
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" style="position: absolute; z-index: 1050;">
+                                    <li class="px-3 py-2 text-muted small border-bottom mb-2 fw-bold">{{ Auth::user()->name }}</li>
+                                    
+                                    @if(Auth::user()->is_admin)
+                                        <li><a class="dropdown-item text-danger fw-bold" href="{{ route('admin.dashboard') }}">Admin Panel</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('admin.users') }}">Data User</a></li>
+                                    @else
+                                        <li><a class="dropdown-item" href="{{ route('writer.index') }}">Halaman Penulis</a></li>
+                                        <li><a class="dropdown-item d-flex justify-content-between" href="{{ route('user.inbox') }}">Notifikasi @if($unreadCount>0)<span class="badge bg-danger rounded-pill">{{$unreadCount}}</span>@endif</a></li>
+                                    @endif
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                    
+                                    {{-- PERBAIKAN DI SINI: Gunakan 'profile.index' bukan 'profil.index' --}}
+                                    <li><a class="dropdown-item" href="{{ route('profile.index') }}">Profil Saya</a></li>
+                                    
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Keluar</a>
+                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                                    </li>
+                                </ul>
+                            @endauth
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
+
+    @if(isset($global_announcement) && $global_announcement)
+        <div class="global-announcement py-2 px-3 text-center fw-bold d-flex justify-content-center align-items-center gap-2"
+             data-type="{{ $global_announcement->type }}">
+            
+            @if($global_announcement->type == 'warning') <i class="bi bi-exclamation-triangle-fill"></i>
+            @elseif($global_announcement->type == 'danger') <i class="bi bi-megaphone-fill"></i>
+            @else <i class="bi bi-info-circle-fill"></i> @endif
+
+            <span>{{ $global_announcement->message }}</span>
+        </div>
+
+        <style>
+            .global-announcement { width: 100%; font-size: 0.9rem; }
+
+            /* LIGHT MODE COLORS */
+            [data-bs-theme="light"] .global-announcement[data-type="info"] { background: #cff4fc; color: #055160; border-bottom: 1px solid #b6effb; }
+            [data-bs-theme="light"] .global-announcement[data-type="warning"] { background: #fff3cd; color: #664d03; border-bottom: 1px solid #ffecb5; }
+            [data-bs-theme="light"] .global-announcement[data-type="danger"] { background: #f8d7da; color: #842029; border-bottom: 1px solid #f5c2c7; }
+            [data-bs-theme="light"] .global-announcement[data-type="success"] { background: #d1e7dd; color: #0f5132; border-bottom: 1px solid #badbcc; }
+
+            /* DARK MODE COLORS */
+            [data-bs-theme="dark"] .global-announcement[data-type="info"] { background: #032830; color: #6edff6; border-bottom: 1px solid #084298; }
+            [data-bs-theme="dark"] .global-announcement[data-type="warning"] { background: #332701; color: #ffda6a; border-bottom: 1px solid #664d03; }
+            [data-bs-theme="dark"] .global-announcement[data-type="danger"] { background: #2c0b0e; color: #ea868f; border-bottom: 1px solid #842029; }
+            [data-bs-theme="dark"] .global-announcement[data-type="success"] { background: #051b11; color: #75b798; border-bottom: 1px solid #0f5132; }
+        </style>
+    @endif
 
     <main class="py-4">@yield('content')</main>
     
@@ -440,6 +488,11 @@
                 themeSwitch.checked = true;
             }
         });
+
+        function toggleSidebar() {
+            document.getElementById('adminSidebar').classList.toggle('active');
+            document.querySelector('.sidebar-overlay').classList.toggle('active');
+        }
     </script>
 </body>
 </html>

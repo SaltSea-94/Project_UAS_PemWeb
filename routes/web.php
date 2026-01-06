@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WriterController;
+use App\Http\Controllers\InteractionController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,9 +53,23 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profil', [ProfileController::class, 'index'])->name('profil.index');
     Route::put('/profil', [ProfileController::class, 'update'])->name('profil.update');
+    Route::get('/notifikasi', [ProfileController::class, 'inbox'])->name('user.inbox');
     
     Route::delete('/profil/photo', [ProfileController::class, 'deletePhoto'])->name('profil.delete_photo');
     Route::delete('/profil/account', [ProfileController::class, 'destroy'])->name('profil.destroy');
+    Route::get('/profil', [ProfileController::class, 'index'])->name('profile.index');
+
+    Route::post('/cerita/{id}/review', [InteractionController::class, 'storeReview'])->name('story.review.store');
+    Route::post('/cerita/{id}/review', [InteractionController::class, 'storeReview'])->name('story.review.store');
+    Route::get('/review/{id}/edit', [InteractionController::class, 'editReview'])->name('review.edit');
+    Route::put('/review/{id}', [InteractionController::class, 'updateReview'])->name('review.update');
+    Route::delete('/review/{id}', [InteractionController::class, 'destroyReview'])->name('review.destroy');
+
+    Route::post('/bab/{id}/komentar', [InteractionController::class, 'storeComment'])->name('chapter.comment.store');
+    Route::post('/bab/{id}/komentar', [InteractionController::class, 'storeComment'])->name('chapter.comment.store');
+    Route::get('/komentar/{id}/edit', [InteractionController::class, 'editComment'])->name('comment.edit');
+    Route::put('/komentar/{id}', [InteractionController::class, 'updateComment'])->name('comment.update');
+    Route::delete('/komentar/{id}', [InteractionController::class, 'destroyComment'])->name('comment.destroy');
 
 });
 
@@ -88,4 +104,31 @@ Route::middleware('auth')->prefix('marinulis')->group(function () {
     // Rute Edit Cerita
     Route::get('/cerita/{slug}/edit', [WriterController::class, 'edit'])->name('writer.edit');
     Route::put('/cerita/{slug}/update', [WriterController::class, 'update'])->name('writer.update');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin-panel')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    
+    Route::get('/users', [AdminController::class, 'manageUsers'])->name('admin.users');
+    Route::get('/users/{id}/message', [AdminController::class, 'createMessage'])->name('admin.message.create');
+    Route::post('/users/{id}/message', [AdminController::class, 'sendMessage'])->name('admin.message.send');
+    Route::post('/users/{id}/ban', [AdminController::class, 'toggleBanUser'])->name('admin.users.ban');
+    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('admin.users.delete');
+    
+    Route::get('/stories', [AdminController::class, 'manageStories'])->name('admin.stories');
+    Route::delete('/stories/{id}', [AdminController::class, 'destroyStory'])->name('admin.stories.delete');
+
+    Route::get('/comments', [AdminController::class, 'manageComments'])->name('admin.comments');
+    Route::delete('/comments/{id}', [AdminController::class, 'destroyComment'])->name('admin.comments.delete');
+
+    Route::post('/announcement', [AdminController::class, 'storeAnnouncement'])->name('admin.announcement.store');
+    Route::delete('/announcement/{id}', [AdminController::class, 'destroyAnnouncement'])->name('admin.announcement.delete');
+});
+
+Route::middleware(['not.banned'])->group(function () {
+        
+    Route::get('/writer', [WriterController::class, 'index'])->name('writer.index');
+    Route::get('/writer/create', [WriterController::class, 'create'])->name('writer.create');
+    Route::post('/cerita/{id}/review', [InteractionController::class, 'storeReview'])->name('story.review.store');
+    Route::post('/bab/{id}/komentar', [InteractionController::class, 'storeComment'])->name('chapter.comment.store');
 });

@@ -63,7 +63,7 @@
         $('#summernote').summernote({
             placeholder: 'Silakan ketik atau tempel (paste) tulisan dari Word di sini...',
             tabsize: 2,
-            height: 500, // Tinggi editor
+            height: 500,
             toolbar: [
                 ['style', ['style']],
                 ['font', ['bold', 'underline', 'italic', 'clear']],

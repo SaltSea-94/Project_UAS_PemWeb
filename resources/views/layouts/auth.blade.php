@@ -18,7 +18,7 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-image: url('https://images.pexels.com/photos/694740/pexels-photo-694740.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500');
+            background-image: url('https://i.pinimg.com/1200x/97/e0/22/97e022614fe021601d3bdd7fde30dbae.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -316,6 +316,37 @@
         
         .theme-switch-container input:checked ~ .moon-icon { 
             display: none; 
+        }
+
+        .public-wallpaper::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            background-image: url('https://i.pinimg.com/1200x/97/e0/22/97e022614fe021601d3bdd7fde30dbae.jpg');
+            
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.55; 
+            z-index: -1;
+            filter: brightness(0.6) grayscale(20%); 
+        }
+
+        body.public-wallpaper {
+            background-color: transparent !important;
+        }
+
+        .card {
+            background-color: var(--bs-body-bg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        html {
+        background-color: transparent !important;
         }
     </style>
 </head>

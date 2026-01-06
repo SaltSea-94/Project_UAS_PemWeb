@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Story;
 
-class Chapter extends Model
+class Review extends Model
 {
     protected $guarded = ['id'];
 
-    public function comments()
+    public function user()
     {
-        return $this->hasMany(Comment::class)->latest();
+        return $this->belongsTo(User::class);
     }
-    
+
     public function story()
     {
         return $this->belongsTo(Story::class);
