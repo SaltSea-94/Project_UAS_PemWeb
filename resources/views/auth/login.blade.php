@@ -34,8 +34,7 @@
                 </div>
             </form>
 
-            <div class="text-center mt-4">
-                <small class="text-muted">Belum punya akun? <a href="{{ route('register') }}" class="text-warning text-decoration-none">Daftar sekarang</a></small>
+            <div class="mt-3 text-white"> Belum punya akun? <a href="{{ route('register') }}" class="text-warning fw-bold text-decoration-none">Daftar sekarang</a>
             </div>
         </div>
     </div>

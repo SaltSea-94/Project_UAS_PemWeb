@@ -28,8 +28,7 @@
                 </div>
             </form>
 
-            <div class="text-center mt-4">
-                <small class="text-muted">Sudah punya akun? <a href="{{ route('login') }}" class="text-primary text-decoration-none">Masuk</a></small>
+            <div class="mt-3 text-white">Sudah punya akun? <a href="{{ route('login') }}" class="text-warning fw-bold text-decoration-none">Masuk</a></small>
             </div>
         </div>
     </div>
