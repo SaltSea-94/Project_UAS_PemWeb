@@ -53,13 +53,22 @@
         <div class="col-md-8">
             <h1 class="fw-bold display-5 mb-2 adaptive-text">{{ $story->title }}</h1>
             
-            <div class="d-flex align-items-center mb-3">
-                <div class="me-3 adaptive-text">
+            <div class="d-flex align-items-center mb-3 flex-wrap gap-3">
+                {{-- Penulis --}}
+                <div class="adaptive-text">
                     <i class="bi bi-person-circle me-1"></i>
                     <span class="fw-bold">{{ $story->author->name }}</span>
                 </div>
+                
+                {{-- Tanggal Update --}}
                 <div class="adaptive-muted small">
-                    <i class="bi bi-clock"></i> Update: {{ $story->updated_at->format('d M Y') }}
+                    <i class="bi bi-clock"></i> {{ $story->updated_at->format('d M Y') }}
+                </div>
+
+                {{-- JUMLAH PEMBACA (Live Count) --}}
+                <div class="adaptive-muted small" title="Jumlah Pembaca">
+                    <i class="bi bi-eye-fill text-primary"></i> 
+                    <span class="fw-bold">{{ number_format($story->views) }}</span> Telah Dibaca
                 </div>
             </div>
 
@@ -104,11 +113,21 @@
                 <div class="list-group list-group-flush">
                     @forelse($story->chapters as $chapter)
                         <a href="{{ route('chapter.read', [$story->slug, $chapter->slug]) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 adaptive-item">
+                            
+                            {{-- Judul Bab --}}
                             <div>
                                 <span class="small me-2 opacity-75">Bab {{ $chapter->sort_order }}</span>
                                 <span class="fw-semibold">{{ $chapter->title }}</span>
                             </div>
-                            <i class="bi bi-chevron-right small opacity-50"></i>
+
+                            {{-- Statistik Pembaca Bab (BARU) --}}
+                            <div class="d-flex align-items-center gap-3">
+                                <small class="text-muted opacity-75" title="Dibaca {{ number_format($chapter->views) }} kali">
+                                    <i class="bi bi-eye-fill me-1"></i> {{ number_format($chapter->views) }}
+                                </small>
+                                <i class="bi bi-chevron-right small opacity-50"></i>
+                            </div>
+
                         </a>
                     @empty
                         <div class="text-center py-4 adaptive-item opacity-75">
