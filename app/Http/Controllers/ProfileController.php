@@ -11,13 +11,11 @@ use App\Models\AdminMessage;
 
 class ProfileController extends Controller
 {
-    // Menampilkan halaman profil
     public function index() {
         $user = Auth::user();
         return view('auth.profil', compact('user'));
     }
 
-    // Update Data (Nama, Email, Foto)
     public function update(Request $request) {
         $user = Auth::user();
 
@@ -27,13 +25,19 @@ class ProfileController extends Controller
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:20480',
         ]);
 
-        // Cek jika user upload foto baru
         if ($request->hasFile('photo')) {
-            if ($user->photo) {
-                Storage::delete('public/' . $user->photo);
+            
+            $file = $request->file('photo');
+
+            $fileName = time() . '_' . $file->getClientOriginalName();
+
+            $file->move(public_path('storage/photos'), $fileName);
+
+            if ($user->photo && file_exists(public_path('storage/' . $user->photo))) {
+                unlink(public_path('storage/' . $user->photo));
             }
-            $path = $request->file('photo')->store('photos', 'public');
-            $user->photo = $path;
+
+            $user->photo = 'photos/' . $fileName;
         }
 
         $user->name = $request->name;
@@ -43,7 +47,6 @@ class ProfileController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
 
-    // Hapus Foto Saja
     public function deletePhoto() {
         $user = Auth::user();
         if ($user->photo) {
@@ -54,7 +57,6 @@ class ProfileController extends Controller
         return back()->with('success', 'Foto profil dihapus.');
     }
 
-    // Hapus Akun Permanen
     public function destroy(Request $request) {
         $user = Auth::user();
         
